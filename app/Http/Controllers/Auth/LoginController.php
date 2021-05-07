@@ -28,7 +28,7 @@ class LoginController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'message' => "Username and Password isn't Match"
+                'message' => "Username and Password tidak sesuai"
             ]);
         };
 

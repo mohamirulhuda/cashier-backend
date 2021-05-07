@@ -1,9 +1,16 @@
 <?php
 
-use App\Http\Controllers\Auth\{ 
-    LoginController, LogoutController, MeController 
+use App\Http\Controllers\Auth\{
+    LoginController,
+    LogoutController,
+    MeController
 };
-use Illuminate\Http\Request;
+use App\Http\Controllers\{
+    CustomerController,
+    SupplierController,
+    UserController,
+    WarehouseController
+};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,8 +29,13 @@ Route::post('login', LoginController::class);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', LogoutController::class);
     Route::get('me', MeController::class);
+
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('customers', CustomerController::class);
+    Route::apiResource('suppliers', SupplierController::class);
+    Route::apiResource('warehouse', WarehouseController::class);
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
