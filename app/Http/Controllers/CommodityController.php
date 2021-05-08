@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
+use App\Models\Commodity\{
+    Commodity,
+    CommodityType
+};
 use Illuminate\Http\Request;
 
-class CustomerController extends Controller
+class CommodityController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +17,10 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        return Customer::all();
+        return Commodity::withoutTrashed()
+            ->with('commodityType', 'commodityUnit')
+            ->get();
+        // return CommodityType::all();
     }
 
     /**
@@ -31,10 +37,10 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Customer  $customer
+     * @param  \App\Models\Commodity  $commodity
      * @return \Illuminate\Http\Response
      */
-    public function show(Customer $customer)
+    public function show(Commodity $commodity)
     {
         //
     }
@@ -43,10 +49,10 @@ class CustomerController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Customer  $customer
+     * @param  \App\Models\Commodity  $commodity
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, Commodity $commodity)
     {
         //
     }
@@ -54,10 +60,10 @@ class CustomerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Customer  $customer
+     * @param  \App\Models\Commodity  $commodity
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Customer $customer)
+    public function destroy(Commodity $commodity)
     {
         //
     }

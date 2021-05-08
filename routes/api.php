@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\{
     MeController
 };
 use App\Http\Controllers\{
+    CommodityController,
     CustomerController,
     SupplierController,
     UserController,
@@ -30,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', LogoutController::class);
     Route::get('me', MeController::class);
 
+    Route::apiResource('commodities', CommodityController::class);
     Route::apiResource('users', UserController::class);
     Route::apiResource('customers', CustomerController::class);
     Route::apiResource('suppliers', SupplierController::class);
