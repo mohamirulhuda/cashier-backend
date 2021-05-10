@@ -14,7 +14,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        return Customer::all();
+        return Customer::paginate(10);
     }
 
     /**
@@ -36,7 +36,7 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        //
+        return $customer;
     }
 
     /**
@@ -59,6 +59,15 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        //
+        $customer->delete();
+        return response()->json([
+            'message' => "Data berhasil dihapus"
+        ]);
+    }
+
+    public function dataTable(Request $request)
+    {
+        return Customer::orderBy($request->column, $request->sortType)
+            ->paginate($request->length);
     }
 }

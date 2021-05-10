@@ -17,7 +17,7 @@ class CustomersSeeder extends Seeder
     {
         $faker = \Faker\Factory::create('id_ID');
         
-        for ($i = 1 ; $i < 10 ; $i++) {
+        for ($i = 0 ; $i < 100 ; $i++) {
             DB::table('customers')->insert([
                 'name' => $faker->name,
                 'contact_1' => $faker->phoneNumber,

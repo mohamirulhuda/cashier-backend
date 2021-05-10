@@ -8,9 +8,7 @@ use App\Http\Controllers\Auth\{
 use App\Http\Controllers\{
     CommodityController,
     CustomerController,
-    SupplierController,
     UserController,
-    WarehouseController
 };
 use Illuminate\Support\Facades\Route;
 
@@ -31,11 +29,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', LogoutController::class);
     Route::get('me', MeController::class);
 
+    
     Route::apiResource('commodities', CommodityController::class);
     Route::apiResource('users', UserController::class);
     Route::apiResource('customers', CustomerController::class);
-    Route::apiResource('suppliers', SupplierController::class);
-    Route::apiResource('warehouse', WarehouseController::class);
+    
+    Route::prefix('/table')->group(function() {
+        Route::post('/commodities', [CommodityController::class, 'dataTable']);
+        Route::post('/customers', [CustomerController::class, 'dataTable']);
+    });
 });
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {

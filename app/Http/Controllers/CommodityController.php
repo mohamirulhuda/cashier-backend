@@ -65,6 +65,19 @@ class CommodityController extends Controller
      */
     public function destroy(Commodity $commodity)
     {
-        //
+        $commodity->delete();
+        return response()->json([
+            'message' => 'Data berhasil dihapus'
+        ]);
+    }
+
+    public function dataTable(Request $request)
+    {
+        return Commodity::with('commodityType', 'commodityUnit')
+            ->orderBy($request->column, $request->sortType)
+            ->paginate($request->length);
+        // return Commodity::with('commodityType', 'commodityUnit')
+        //     ->orderBy('id', 'asc')
+        //     ->paginate(10);
     }
 }
