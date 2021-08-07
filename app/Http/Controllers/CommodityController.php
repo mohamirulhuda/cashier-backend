@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Dropdown\CommodityTypeResource;
 use App\Models\Commodity\{
     Commodity,
-    CommodityType
+    CommodityType,
+    CommodityUnit
 };
 use Illuminate\Http\Request;
 
@@ -54,7 +56,15 @@ class CommodityController extends Controller
      */
     public function update(Request $request, Commodity $commodity)
     {
-        //
+        $commodity->name = $request->name;
+        $commodity->type_id = $request->category;
+        $commodity->sell_price = $request->price;
+        // $commodity->stock = 10;
+        $commodity->save();
+
+        return response()->json([
+            'message' => "Data Barang Berhasil Diedit"
+        ]);
     }
 
     /**
@@ -67,17 +77,58 @@ class CommodityController extends Controller
     {
         $commodity->delete();
         return response()->json([
-            'message' => 'Data berhasil dihapus'
+            'message' => 'Data barang berhasil dihapus'
         ]);
     }
 
-    public function dataTable(Request $request)
+    public function datatable(Request $request)
     {
-        return Commodity::with('commodityType', 'commodityUnit')
-            ->orderBy($request->column, $request->sortType)
-            ->paginate($request->length);
+        $result = Commodity::with('commodityType', 'commodityUnit');
+
+        if ($request->search) {
+            $result->where('code', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('name', 'LIKE', '%' . $request->search . '%');
+        };
+
+        $result->orderBy($request->column, $request->sortType);
+
+        return $result->paginate($request->length);
         // return Commodity::with('commodityType', 'commodityUnit')
-        //     ->orderBy('id', 'asc')
-        //     ->paginate(10);
+        //     ->orderBy($request->column, $request->sortType)
+        //     ->paginate($request->length);
+    }
+
+    public function type()
+    {
+        $resources =  CommodityType::all();
+        $response = [];
+
+        foreach ($resources as $resource) {
+            $data = [
+                'id' => $resource->id,
+                'value' => $resource->id,
+                'label' => $resource->name,
+            ];
+            array_push($response, $data);
+        };
+
+        return $response;
+    }
+
+    public function unit()
+    {
+        $resources =  CommodityUnit::all();
+        $response = [];
+
+        foreach ($resources as $resource) {
+            $data = [
+                'id' => $resource->id,
+                'value' => $resource->id,
+                'label' => $resource->name,
+            ];
+            array_push($response, $data);
+        };
+
+        return $response;
     }
 }

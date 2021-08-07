@@ -28,7 +28,7 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'username' => 'required|unique:users|alpha_num',
-            'email' => 'required|email|unique:users',
+            'email' => 'email|unique:users',
             'password' => 'required|min:8'
         ]);
 
@@ -83,5 +83,11 @@ class UserController extends Controller
         return response()->json([
             'message' => "User Deleted succesfully"
         ]);
+    }
+
+    public function datatable(Request $request)
+    {
+        return User::role('cashier')->orderBy($request->column, $request->sortType)
+            ->paginate($request->length);
     }
 }

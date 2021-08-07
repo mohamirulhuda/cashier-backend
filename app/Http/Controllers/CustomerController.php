@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isEmpty;
+
 class CustomerController extends Controller
 {
     /**
@@ -17,6 +19,23 @@ class CustomerController extends Controller
         return Customer::paginate(10);
     }
 
+    public function customer_dropdown()
+    {
+        $resources =  Customer::all();
+        $response = [];
+
+        foreach ($resources as $resource) {
+            $data = [
+                'id' => $resource->id,
+                'value' => $resource->id,
+                'label' => explode(" ", $resource->name,)[0],
+            ];
+            array_push($response, $data);
+        };
+
+        return $response;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -25,7 +44,22 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|unique:customers',
+        ]);
+
+        $data = [
+            'name' => $request->name,
+            'address' => $request->address,
+            'contact_1' => $request->contact1,
+            'contact_2' => $request->contact2
+        ];
+
+        Customer::create($data);
+
+        return response()->json([
+            'message' => "Data Pelanggan Berhasil Ditambahkan"
+        ]);
     }
 
     /**
@@ -48,7 +82,15 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        //
+        $customer->name = $request->name;
+        $customer->address = $request->address;
+        $customer->contact_1 = $request->contact1;
+        $customer->contact_2 = $request->contact2;
+        $customer->save();
+
+        return response()->json([
+            'message' => "Data Pelanggan Berhasil Diedit"
+        ]);
     }
 
     /**
@@ -61,7 +103,7 @@ class CustomerController extends Controller
     {
         $customer->delete();
         return response()->json([
-            'message' => "Data berhasil dihapus"
+            'message' => "Data pelanggan berhasil dihapus"
         ]);
     }
 
@@ -69,5 +111,10 @@ class CustomerController extends Controller
     {
         return Customer::orderBy($request->column, $request->sortType)
             ->paginate($request->length);
+    }
+
+    public function total_data()
+    {
+        return Customer::count();
     }
 }

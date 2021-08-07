@@ -10,6 +10,8 @@ class Commodity extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $guarded = [];
+
     public function commodityType()
     {
         return $this->hasOne(CommodityType::class, 'id', 'type_id');
@@ -18,6 +20,11 @@ class Commodity extends Model
     public function commodityUnit()
     {
         return $this->hasOne(CommodityUnit::class, 'id', 'unit_id');
+    }
+
+    public function commodityStocks()
+    {
+        return $this->hasOne(CommodityStocks::class, 'id', 'unit_id');
     }
 
 }

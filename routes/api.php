@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\{
 use App\Http\Controllers\{
     CommodityController,
     CustomerController,
+    TransactionController,
     UserController,
 };
 use Illuminate\Support\Facades\Route;
@@ -34,9 +35,29 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('customers', CustomerController::class);
     
+    Route::prefix('/transactions')->group(function() {
+        Route::post('/record-sales', [TransactionController::class, 'checkout']);
+    });
+
     Route::prefix('/table')->group(function() {
-        Route::post('/commodities', [CommodityController::class, 'dataTable']);
-        Route::post('/customers', [CustomerController::class, 'dataTable']);
+        Route::post('/commodities', [CommodityController::class, 'datatable']);
+        Route::post('/users', [UserController::class, 'datatable']);
+        Route::post('/customers', [CustomerController::class, 'datatable']);
+        Route::post('/last-trans', [TransactionController::class, 'datatable']);
+    });
+
+    Route::prefix('/dashboard')->group(function() {
+        Route::get('/customer', [CustomerController::class, 'total_data']);
+        Route::get('/sale', [TransactionController::class, 'sale_count']);
+        Route::get('/item-sold', [TransactionController::class, 'item_sold']);
+        Route::get('/best-seller', [TransactionController::class, 'best_seller']);
+        Route::get('/graph', [TransactionController::class, 'graph']);
+    });
+
+    Route::prefix('/dropdown')->group(function() {
+        Route::get('/commodity-units', [CommodityController::class, 'unit']);
+        Route::get('/commodity-types', [CommodityController::class, 'type']);
+        Route::get('/customers', [CustomerController::class, 'customer_dropdown']);
     });
 });
 

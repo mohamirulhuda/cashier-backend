@@ -19,6 +19,7 @@ class CreateCustomersTable extends Migration
             $table->string('contact_1', 50)->nullable();
             $table->string('contact_2', 50)->nullable();
             $table->text('address')->nullable();
+            
             $table->timestamps();
             $table->softDeletes();
         });

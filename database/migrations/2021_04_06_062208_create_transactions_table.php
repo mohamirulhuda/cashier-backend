@@ -13,47 +13,47 @@ class CreateTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
-            $table->string('code');
-            $table->foreignId('transaction_type_id');
-            $table->date('date');
-            $table->foreignId('user_id');
-            $table->timestamps();
-            $table->softDeletes();
-        });
 
         Schema::create('transaction_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
         });
+
+        Schema::create('transactions', function (Blueprint $table) {
+            $table->id();
+            $table->string('code')->index();
+            $table->foreignId('transaction_type_id')->references('id')->on('transaction_types');
+            $table->date('date');
+            $table->foreignId('user_id')->references('id')->on('users');
+            $table->string('note')->nullable();
+
+            $table->timestamps();
+            $table->softDeletes();
+        });
         
         Schema::create('transaction_sales', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaction_code');
-            $table->string('customer');
-            $table->integer('cost');
-            $table->integer('discount')->nullable();
-            $table->integer('debt')->nullable();
-            $table->integer('payout');
+            $table->string('transaction_code')->references('code')->on('transactions');
+            $table->foreignId('customer_id')->nullable()->references('id')->on('customers');
+            $table->string('non_customer')->nullable();
+            $table->integer('cost')->default(0);
+            $table->integer('discount')->default(0);
+            $table->integer('debt')->default(0);
+            $table->integer('cash')->default(0);
             
-            $table->timestamps();
-        });
-
-        Schema::create('transaction_restocks', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('transaction_code');
-            $table->foreignId('supplier_id');
-
             $table->timestamps();
         });
 
         Schema::create('transaction_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaction_code');
-            $table->foreignId('commodity_id');
-            $table->integer('in')->nullable();
-            $table->integer('out')->nullable();
+            $table->string('transaction_code')->references('code')->on('transactions');
+            $table->string('commodity_id')->references('id')->on('commodities');
+            $table->integer('first_stock')->nullable();
+            $table->integer('in')->default(0);
+            $table->integer('out')->default(0);
+            $table->integer('last_stock')->nullable();
+            $table->string('note')->nullable();
+
             $table->timestamps();
         });
     }
@@ -65,10 +65,9 @@ class CreateTransactionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('transactions');
         Schema::dropIfExists('transaction_types');
+        Schema::dropIfExists('transactions');
         Schema::dropIfExists('transaction_sales');
-        Schema::dropIfExists('transaction_restocks');
         Schema::dropIfExists('transaction_details');
     }
 }

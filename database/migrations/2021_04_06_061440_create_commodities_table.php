@@ -13,35 +13,31 @@ class CreateCommoditiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('commodities', function (Blueprint $table) {
-            $table->id();
+        Schema::create('commodity_types', function (Blueprint $table) {
+            $table->id()->index();
             $table->string('name', 50);
-            $table->string('code', 50);
-            $table->foreignId('type_id');
-            $table->foreignId('unit_id');
-            $table->integer('sell_price');
-            $table->integer('purchase_price');
+            $table->timestamps();
+        });
+        
+        Schema::create('commodity_units', function (Blueprint $table) {
+            $table->id()->index();
+            $table->string('name', 50);
+            $table->string('desc', 50);
+            
             $table->timestamps();
             $table->softDeletes();
         });
 
-        Schema::create('commodity_stocks', function (Blueprint $table) {
-            $table->foreignId('commodity_id');
-            $table->foreignId('warehouse_id');
-            $table->integer('stocks');
-            $table->timestamps();
-        });
-
-        Schema::create('commodity_types', function (Blueprint $table) {
+        Schema::create('commodities', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
-            $table->timestamps();
-        });
+            $table->string('code', 50);
+            $table->foreignId('type_id')->references('id')->on('commodity_types');
+            $table->foreignId('unit_id')->references('id')->on('commodity_units');
+            $table->integer('sell_price')->default(0);
+            $table->integer('purchase_price')->default(0);
+            $table->integer('stock')->default(0);
 
-        Schema::create('commodity_units', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 50);
-            $table->string('desc', 50);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -54,9 +50,8 @@ class CreateCommoditiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('commodities');
-        Schema::dropIfExists('commodity_stocks');
         Schema::dropIfExists('commodity_types');
         Schema::dropIfExists('commodity_units');
+        Schema::dropIfExists('commodities');
     }
 }
