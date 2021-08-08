@@ -9,6 +9,7 @@ use App\Models\Transaction\{
     TransactionSale
 };
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -115,7 +116,7 @@ class TransactionController extends Controller
 
     public function sale_count()
     {
-        return TransactionSale::count();
+        return Transaction::where('date', Carbon::now()->format("Y-m-d"))->count();
     }
 
     public function item_sold()
@@ -153,6 +154,32 @@ class TransactionController extends Controller
             ->groupBy('date')
             ->get();
 
+        return $res;
+    }
+
+    public function sales_report(Request $request)
+    {
+        // return Transaction::withSum('sales as income', 'cost')
+        //     ->withSum('details as items_sold', 'out')
+        //     ->withCount(['sales as total_transaction'])
+        //     ->groupBy('date')
+        //     // ->get();
+        //     // ->distinct('code')->count('code')
+        //     // ->select('code', DB::raw('count(*) as total'))
+        //     ->paginate($request->length);
+
+        $res = DB::table('transactions')
+            ->join('transaction_details', 'transactions.code', '=', 'transaction_details.transaction_code')
+            ->join('transaction_sales', 'transactions.code', '=', 'transaction_sales.transaction_code')
+            ->select(
+                'date',
+                DB::raw('SUM(DISTINCT transaction_sales.cost) as income'),
+                DB::raw('COUNT(transaction_details.out) as items_sold'),
+                DB::raw('COUNT(DISTINCT transactions.code) as total_transaction'),
+            )
+            ->groupBy('date')
+            ->paginate(10);
+            
         return $res;
     }
 }

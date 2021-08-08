@@ -25,21 +25,21 @@ class UsersTableSeeder extends Seeder
                 'username' => 'admin',
                 'password' => bcrypt('p4ssw0rd')
             ],
-            [
-                'name' => 'Mohammad Amirul Huda',
-                'username' => 'amirul1997',
-                'password' => bcrypt('password')
-            ],
-            [
-                'name' => 'Nokie Pratama Putra',
-                'username' => 'noknok19',
-                'password' => bcrypt('password')
-            ],
-            [
-                'name' => 'Vie Trimey',
-                'username' => 'cia1234',
-                'password' => bcrypt('password')
-            ],
+            // [
+            //     'name' => 'Mohammad Amirul Huda',
+            //     'username' => 'amirul1997',
+            //     'password' => bcrypt('password')
+            // ],
+            // [
+            //     'name' => 'Nokie Pratama Putra',
+            //     'username' => 'noknok19',
+            //     'password' => bcrypt('password')
+            // ],
+            // [
+            //     'name' => 'Vie Trimey',
+            //     'username' => 'cia1234',
+            //     'password' => bcrypt('password')
+            // ],
 
         ]);
     }

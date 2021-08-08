@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::prefix('/transactions')->group(function() {
         Route::post('/record-sales', [TransactionController::class, 'checkout']);
+        Route::post('/report', [TransactionController::class, 'sales_report']);
     });
 
     Route::prefix('/table')->group(function() {
@@ -58,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/commodity-units', [CommodityController::class, 'unit']);
         Route::get('/commodity-types', [CommodityController::class, 'type']);
         Route::get('/customers', [CustomerController::class, 'customer_dropdown']);
+        Route::get('/roles', [UserController::class, 'show_all_role']);
     });
 });
 

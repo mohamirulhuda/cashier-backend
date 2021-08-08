@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -14,7 +16,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::where('id', '>', 2)->get();
+        return User::with('roles:name')
+            ->where('id', '>', 2)
+            ->get();
     }
 
     /**
@@ -27,6 +31,7 @@ class UserController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string',
+            // 'role' => 'required|in:1,2',
             'username' => 'required|unique:users|alpha_num',
             'email' => 'email|unique:users',
             'password' => 'required|min:8'
@@ -34,10 +39,11 @@ class UserController extends Controller
 
         $data['password'] = bcrypt($request->password);
 
-        User::create($data);
+        $user = User::create($data);;
+        $user->assignRole('admin');
 
         return response()->json([
-            'message' => "User Registered succesfully"
+            'message' => "Data Updated Successfuly"
         ]);
     }
 
@@ -64,6 +70,17 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->username = $request->username;
         $user->email = $request->email;
+
+        if ($request->changePassword) {
+            $user->password = Hash::make($request->password);
+        }
+
+        // $role = $request->role == 1 ? 'admin' : 'cashier';
+
+        // if ($request->role > 0) {
+        //     $user->assignRole($role);
+        // }
+
         $user->save();
 
         return response()->json([
@@ -85,9 +102,30 @@ class UserController extends Controller
         ]);
     }
 
+    // SECTION DATA & INFO
+
     public function datatable(Request $request)
     {
-        return User::role('cashier')->orderBy($request->column, $request->sortType)
+        return User::where('id', '>', 2)
+            ->with('roles')
+            ->orderBy('id', 'asc')
             ->paginate($request->length);
+    }
+
+    public function show_all_role()
+    {
+        $resources =  Role::where('id', '>', '1')->get();
+        $response = [];
+
+        foreach ($resources as $resource) {
+            $data = [
+                'id' => $resource->id,
+                'value' => $resource->id,
+                'label' => $resource->name,
+            ];
+            array_push($response, $data);
+        };
+
+        return $response;
     }
 }

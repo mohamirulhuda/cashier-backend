@@ -22,7 +22,7 @@ class Transaction extends Model
         return $this->hasOne(TransactionSale::class, 'transaction_code', 'code');
     }
 
-    public function transaction_detail()
+    public function details()
     {
         return $this->hasMany(TransactionDetail::class, 'transaction_code', 'code');
     }
