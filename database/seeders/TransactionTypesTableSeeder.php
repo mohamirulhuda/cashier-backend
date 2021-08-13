@@ -16,7 +16,7 @@ class TransactionTypesTableSeeder extends Seeder
     {
         DB::table('transaction_types')->insert([
             ['name' => 'Penjualan'],
-            ['name' => 'Pembelian'],
+            ['name' => 'Restock'],
             ['name' => 'Opname'],
             ['name' => 'Return']
         ]);

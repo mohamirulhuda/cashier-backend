@@ -35,6 +35,12 @@ class CommodityUnitsSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
+                'name' => 'pcs',
+                'desc' => 'Potong',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ],
+            [
                 'name' => 'bks',
                 'desc' => 'Bungkus',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),

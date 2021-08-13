@@ -109,7 +109,7 @@ class CustomerController extends Controller
 
     public function dataTable(Request $request)
     {
-        return Customer::orderBy($request->column, $request->sortType)
+        return Customer::orderBy('id', 'ASC')
             ->paginate($request->length);
     }
 

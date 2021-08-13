@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\Dropdown\CommodityTypeResource;
 use App\Models\Commodity\{
     Commodity,
     CommodityType,
@@ -33,7 +32,21 @@ class CommodityController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required|string',
+            'type_id' => 'required',
+            'unit_id' => 'required',
+            'sell_price' => 'required',
+            'stock' => '',
+        ]);
+        $code = array('code' => $this->items_code($data['type_id']));
+        $insert = array_merge($code, $data);
+
+        Commodity::create($insert);
+
+        return response()->json([
+            'message' => "Data Barang Berhasil Ditambahkan"
+        ]);
     }
 
     /**
@@ -57,9 +70,14 @@ class CommodityController extends Controller
     public function update(Request $request, Commodity $commodity)
     {
         $commodity->name = $request->name;
-        $commodity->type_id = $request->category;
-        $commodity->sell_price = $request->price;
-        // $commodity->stock = 10;
+        $commodity->unit_id = $request->unit_id;
+        $commodity->sell_price = $request->sell_price;
+        // $commodity->stock = $request->stock;
+        if ($commodity->type_id != $request->type_id) {
+            $commodity->code = $this->items_code($request->type_id);
+        }
+        $commodity->type_id = $request->type_id;
+
         $commodity->save();
 
         return response()->json([
@@ -81,21 +99,32 @@ class CommodityController extends Controller
         ]);
     }
 
+    // SECTION INFO & DATA
+
+    public function items_code($type_id)
+    {
+        $res = "";
+        $type = CommodityType::find($type_id);
+        $item = Commodity::where('type_id', $type_id)->withTrashed();
+        $count = $item->count() + 1;
+        $res = strval($type->code . sprintf("%02d", $count));
+
+        return $res;
+    }
+
     public function datatable(Request $request)
     {
         $result = Commodity::with('commodityType', 'commodityUnit');
+        // $result->orderBy('id', 'ASC');
 
         if ($request->search) {
             $result->where('code', 'LIKE', '%' . $request->search . '%')
-                    ->orWhere('name', 'LIKE', '%' . $request->search . '%');
+                    ->orWhere('name', 'LIKE', '%' . $request->search . '%')
+                    ->orderBy('name', 'ASC');
         };
 
-        $result->orderBy($request->column, $request->sortType);
 
         return $result->paginate($request->length);
-        // return Commodity::with('commodityType', 'commodityUnit')
-        //     ->orderBy($request->column, $request->sortType)
-        //     ->paginate($request->length);
     }
 
     public function type()
@@ -124,7 +153,7 @@ class CommodityController extends Controller
             $data = [
                 'id' => $resource->id,
                 'value' => $resource->id,
-                'label' => $resource->name,
+                'label' => $resource->desc,
             ];
             array_push($response, $data);
         };

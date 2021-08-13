@@ -14,17 +14,12 @@ class Commodity extends Model
 
     public function commodityType()
     {
-        return $this->hasOne(CommodityType::class, 'id', 'type_id');
+        return $this->belongsTo(CommodityType::class, 'type_id', 'id');
     }
 
     public function commodityUnit()
     {
-        return $this->hasOne(CommodityUnit::class, 'id', 'unit_id');
-    }
-
-    public function commodityStocks()
-    {
-        return $this->hasOne(CommodityStocks::class, 'id', 'unit_id');
+        return $this->belongsTo(CommodityUnit::class, 'unit_id', 'id');
     }
 
 }

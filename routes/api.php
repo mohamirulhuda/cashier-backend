@@ -36,8 +36,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('customers', CustomerController::class);
     
     Route::prefix('/transactions')->group(function() {
+        Route::get('/opname-data', [TransactionController::class, 'opname_temp']);
         Route::post('/record-sales', [TransactionController::class, 'checkout']);
         Route::post('/report', [TransactionController::class, 'sales_report']);
+        Route::post('/opname', [TransactionController::class, 'stock_opname']);
+        Route::post('/opname-confirmation', [TransactionController::class, 'opname_save']);
+        Route::patch('/restock/{id}', [TransactionController::class, 'item_restock']);
     });
 
     Route::prefix('/table')->group(function() {

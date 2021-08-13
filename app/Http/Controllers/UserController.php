@@ -34,7 +34,7 @@ class UserController extends Controller
             // 'role' => 'required|in:1,2',
             'username' => 'required|unique:users|alpha_num',
             'email' => 'email|unique:users',
-            'password' => 'required|min:8'
+            'password' => 'required|min:6'
         ]);
 
         $data['password'] = bcrypt($request->password);
@@ -43,7 +43,7 @@ class UserController extends Controller
         $user->assignRole('admin');
 
         return response()->json([
-            'message' => "Data Updated Successfuly"
+            'message' => "Data pengguna disimpan"
         ]);
     }
 
@@ -108,7 +108,7 @@ class UserController extends Controller
     {
         return User::where('id', '>', 2)
             ->with('roles')
-            ->orderBy('id', 'asc')
+            ->orderBy('id', 'ASC')
             ->paginate($request->length);
     }
 

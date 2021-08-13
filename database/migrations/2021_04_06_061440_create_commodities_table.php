@@ -15,6 +15,7 @@ class CreateCommoditiesTable extends Migration
     {
         Schema::create('commodity_types', function (Blueprint $table) {
             $table->id()->index();
+            $table->string('code', 50)->unique();
             $table->string('name', 50);
             $table->timestamps();
         });
@@ -32,8 +33,8 @@ class CreateCommoditiesTable extends Migration
             $table->id();
             $table->string('name', 50);
             $table->string('code', 50);
-            $table->foreignId('type_id')->references('id')->on('commodity_types');
-            $table->foreignId('unit_id')->references('id')->on('commodity_units');
+            $table->foreignId('type_id')->nullable()->references('id')->on('commodity_types');
+            $table->foreignId('unit_id')->nullable()->references('id')->on('commodity_units');
             $table->integer('sell_price')->default(0);
             $table->integer('purchase_price')->default(0);
             $table->integer('stock')->default(0);

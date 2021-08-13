@@ -46,9 +46,9 @@ class RefreshDatabaseCommand extends Command
         $user = User::class;
         $user::find(1)->assignRole('developer');
         $user::find(2)->assignRole('admin');
-        $user::find(3)->assignRole('cashier');
-        $user::find(4)->assignRole('cashier');
-        $user::find(5)->assignRole('cashier');
+        // $user::find(3)->assignRole('cashier');
+        // $user::find(4)->assignRole('cashier');
+        // $user::find(5)->assignRole('cashier');
         $this->info('Operation was successfully executed');
     }
 }
